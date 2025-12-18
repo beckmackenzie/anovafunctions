@@ -1,0 +1,33 @@
+Package: anovafunctions
+Title: One-way and Two-way ANOVA Analysis
+Version: 0.0.0.9000
+Authors@R:
+    person("MacKenzie", "Beck",
+           email = "beckmack@iu.edu",
+           role = c("aut", "cre"))
+Description: This package is designed to complete common tasks within ANOVA analysis for
+    one-way and two-way ANOVA models. Users can generate publishable ANOVA tables and
+    plots for visualization. The package also returns and interprets critical values such
+    as p-values, R-squared and adjusted R-squared, confidence intervals, and prediction
+    intervals.
+License: GPL-3
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Imports:
+    bslib,
+    dplyr,
+    DT,
+    flextable,
+    ggplot2,
+    gt,
+    gtExtras,
+    magrittr,
+    rlang,
+    shiny,
+    stats
+Suggests: 
+    aplore3,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
