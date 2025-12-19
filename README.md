@@ -19,3 +19,11 @@ After loading the `remotes` package, install this package by running this code i
 ```r
 remotes::install_github("beckmackenzie/anovafunctions", subdir = "anovafunctions")
 ```
+
+Then load it:
+
+```r
+library(anovafunctions)
+```
+
+Now you are ready to use this package. 
