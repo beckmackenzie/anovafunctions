@@ -26,10 +26,11 @@ After loading the `remotes` package, install this package by running this code i
 remotes::install_github("beckmackenzie/anovafunctions", subdir = "anovafunctions")
 ```
 
-Then load it:
+Then load it and load ggplot2 package
 
 ```r
 library(anovafunctions)
+library(ggplot2)
 ```
 
 Now you are ready to use this package. 
