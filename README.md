@@ -1,17 +1,21 @@
-# **Using anovafunctions**
+# Using anovafunctions
 
-## **Installation
-First make sure that the remotes package is installed, 
-if not run this code in your R console:
+## Installation
+
+First make sure that the `remotes` package is installed. If not, run this code in your R console:
+
 ```r
-install.packages("remotes")```
+install.packages("remotes")
+```
 
 Then load it:
-```r
-library(remotes)```
 
-After loading the remotes package, install this package by running this 
-code in your R console:
 ```r
-remotes::install_github("beckmackenzie/anovafunctions", subdir = "anovafunctions")```
+library(remotes)
+```
 
+After loading the `remotes` package, install this package by running this code in your R console:
+
+```r
+remotes::install_github("beckmackenzie/anovafunctions", subdir = "anovafunctions")
+```
