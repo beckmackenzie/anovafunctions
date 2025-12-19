@@ -1,0 +1,137 @@
+---
+title: "anovafunctions"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{anovafunctions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(anovafunctions)
+library(ggplot2)
+```
+
+# Using anova
+This vignette is intended for users who use anova within their package code, currently the anova package is compatible with one-way anova for numerical and categorical factors and two-way anova for either two categorical factors or one categorical and one numeric factor. Anova utilizes other packages including flextable and ggplot2 to generate anova results and appropriate plots for those results. As well as interpreting specific result values such as p-values, r-squared, and confidence intervals and prediction intervals.
+
+## Background 
+The development of this package was inspired by questions that commonly appeared in a Biostatistics Methods course the developer was taking at the time of its creation. 
+A few frequently encountered questions in this course are as follows...
+  1. Test if the effect is statistically significant at level 0.05( Is the p-value less that 0.05?)
+  2. Obtain the 95% confidence interval and prediction interval for the dependent variable when the independent variable(s) =x and interpret your result. 
+  3. Fit a straight-line regression for the model.
+Each of these questions and more are addressed in anova. The functions 'report_overall_pval_anova' and 'report_pvals_anova' address challenge one the first finds the overall p value for one way anova, and the second finds the p-value for each factor and interaction if it exists. For problem two, 'interpret_one_anova_intervals' and  'interpret_anova_regression_intervals' calculate and print interpretations of both intervals for one-way and two-way anova respectively. Problem 3 is addressed by  'plot_anova_regression_ci_pi'. Many challenges of anova analysis are also addressed in this package. In the early stages of the development of anova the main focus was placed on generating linear regression plots and creating tables with values for confidence bands and prediction bands. However, as development progressed the package expanded to include one-way and two-way anova analysis. This occurred because the developer became more comfortable with their knowledge of anova analysis and was able to determine more beneficial ways to utilized r programming.
+
+## Using functions developed for One-Way ANOVA
+
+### One-Way Anova when x-variable is numerical
+First let's go through an example where both x and y variables are numeric, using the nhanes data set from the aplore3 package. For this example the default significance level (95%)/alpha=0.05 will be used to examine the effect of total cholesterol(tchol) on systolic blood pressure(sysbp). 
+
+
+```{r}
+oneway_anova_flextable(sysbp~tchol, aplore3::nhanes)
+```
+
+```{r}
+report_overall_pval_anova(sysbp~tchol, aplore3::nhanes)
+```
+
+```{r}
+report_oneway_anova_r2(sysbp~tchol, aplore3::nhanes)
+```
+
+
+```{r}
+interpret_one_anova_intervals(sysbp~tchol, aplore3::nhanes, x_value=170)
+```
+Please note the confidence interval is very small for this example.
+```{r}
+plot_anova_regression_ci_pi(sysbp~tchol, aplore3::nhanes)
+```
+
+### One-Way Anova when x-variable is categorical
+Now let's look at an example where the x-variable is categorical, using the lowbwt dataset from the aplore3 package. For this example you will be shown how to change the significance level from the default option, significance level 90/alpha=0.10 will be used to determine the effect of a mother's history of premature labor(ptl) on her infant's recorded birth weight(bwt) using the lowbwt dataset from the aplore3. Please note because x-variable is categorical.
+```{r}
+oneway_anova_flextable(bwt~ptl,aplore3::lowbwt, alpha=0.10)
+```
+
+```{r}
+report_overall_pval_anova(bwt~ptl,aplore3::lowbwt, alpha=0.10)
+```
+
+```{r}
+report_oneway_anova_r2(bwt~ptl,aplore3::lowbwt)
+
+```
+
+```{r}
+boxplot_oneway_anova_ci(bwt~ptl,aplore3::lowbwt)
+```
+
+
+## Using Functions Developed for Two-way ANOVA
+
+### Two-way ANOVA when Both Factors are Categorical
+In this example, both factors are categorical and the default significance level (95%)/alpha=0.05 will be used to examine the effect of neuropsyhiatric disturbance (neuro) and emotional disturbance (emot) with interaction on behavioral symptoms score(behav) using the aps dataset from the aplore3 package. When working with interaction, for all functions besides 'twoway_anova_plots' using the fulling syntax (response~factor1*factor2, data).
+```{r}
+twoway_anova_flextable(behav~neuro*emot,aplore3::aps)
+```
+```{r}
+report_pvals_anova(behav~neuro*emot,aplore3::aps)
+```
+
+```{r}
+report_twoway_anova_r2(behav~neuro*emot,aplore3::aps)
+```
+The syntax of 'twoway_anova_plots' is different from the previous functions to call this function use this format (data, response, factor 1, factor 2)
+```{r}
+twoway_anova_plots(aplore3::aps, behav, neuro, emot )
+```
+
+### Two-way ANOVA when One Factor is Numerical and the Other is Categorical
+In this example, and the significance level (90%)/alpha=0.10 will be used to examine the effect of total cholesterol(tchol) and vigorous recreational activities (vigrecexr) WITHOUT interaction on systolic blood pressure(sysbp) using the nhanes dataset from the aplore3 package. When working with NO interaction, for all functions besides ' and ''twoway_anova_plots' using the fulling syntax (response~factor1+factor2, data).
+```{r}
+twoway_anova_flextable(bmi~tchol+vigrecexr, aplore3::nhanes, alpha=0.10)
+```
+
+```{r}
+report_pvals_anova(bmi~tchol+vigrecexr, aplore3::nhanes, alpha=0.10)
+```
+
+```{r}
+report_twoway_anova_r2(bmi~tchol+vigrecexr, aplore3::nhanes)
+```
+The syntax of 'interpret_anova_regression_intervals' is different from the previous functions, to call this function use this format (formula, data, newdata)
+The newdata frame can be created with in the function shown here or outside the function. 
+```{r}
+interpret_anova_regression_intervals(bmi~tchol+vigrecexr, aplore3::nhanes, newdata <- data.frame(
+  tchol = 220,
+  vigrecexr = factor("Yes", levels = levels(aplore3::nhanes$vigrecexr))
+))
+```
+Here is the same example showing the newdata frame created outside the function.
+```{r}
+newdata <- data.frame(
+  tchol = 220,
+  vigrecexr = factor("Yes", levels = levels(aplore3::nhanes$vigrecexr))
+)
+
+interpret_anova_regression_intervals(bmi~tchol+vigrecexr, aplore3::nhanes, newdata)
+```
+
+## Shiny App
+This package also comes with a shiny application that allows you to upload a dataset, run One-way ANOVA and generate appropriate plots for visualization. Run the following function to open the shiny application
+```{r, eval=FALSE}
+run_oneway_app()
+```
+
+## Future Improvements
+One improvement that can be made to this package would be adding the option for users to change how variable names appear on plots and tables. This can be accomplished by adding extra parameters to the function for variable labels and then including within the function if/else statement that checks to see if those parameters are specified, if yes the function will print the specified label, if not the function will default to the variable names from the data set. User options can also be expanded to include the option to change the colors used on plots. This could be done by adding extra parameters (for example pointcolor)to the function and then within the function assigning the color to the parameter(pointcolor) instead of an actual color(black). Also, an additional shiny application can be made to use with two-way ANOVA. The UI from the one-way ANOVA  could be used with minimal changes, but the server would need to be changed to work with two-way ANOVA. Another improvement I would like to make is to the 'plot_anova_regression_ci_pi' the function aes_string used in this function is deprecated so I get a warning were trying to develop this function. For now ggplot2 needs to be loaded into a user's R script editor for this function to work, I would like to correct this by using tidy-evaluation with aes() instead. 
