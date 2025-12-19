@@ -3,7 +3,7 @@
 ## **Installation
 First make sure that the remotes package is installed, 
 if not run this code in your R console:
-```r 
+```r
 install.packages("remotes")```
 
 Then load it:
